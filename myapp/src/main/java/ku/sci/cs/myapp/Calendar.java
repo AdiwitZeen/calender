@@ -1,23 +1,27 @@
+//Adiwit Yeammaneechai 5710450014
+
 package ku.sci.cs.myapp;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
 
 public class Calendar {
 	
+	private final SimpleIntegerProperty number;
 	private final SimpleStringProperty date;
 	private final SimpleStringProperty time;
 	private final SimpleStringProperty detail;
 
-	public Calendar(String date, String time, String detail) {
+	public Calendar(Integer number, String date, String time, String detail) {
 		super();
+		this.number = new SimpleIntegerProperty(number);
 		this.date = new SimpleStringProperty(date);
 		this.time = new SimpleStringProperty(time);
 		this.detail = new SimpleStringProperty(detail);
+	}
+	
+	public Integer getNumber() {
+		return number.get();
 	}
 
 	public String getDate() {

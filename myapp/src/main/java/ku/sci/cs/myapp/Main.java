@@ -1,3 +1,6 @@
+//Adiwit Yeammaneechai 5710450014
+
+
 package ku.sci.cs.myapp;
 
 import javafx.application.Application;
@@ -5,25 +8,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
-/**
- * Hello world!
- *
- */
-public class Main extends Application
-{
-    public static void main( String[] args )
-    {
+public class Main extends Application {
+	
+    public static void main( String[] args ){
     	launch(args);
     }
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
+		Stage window = primaryStage;
 		Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 		Scene scene = new Scene(root);
-		primaryStage.setTitle("Event of Mine");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		window.setTitle("My Calendar");
+		window.setScene(scene);
+		window.show();
 	}
+
+	public static Window getPrimaryStage() {
+		return null;
+	}
+	
 }
