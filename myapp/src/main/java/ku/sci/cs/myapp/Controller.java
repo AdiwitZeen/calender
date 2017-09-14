@@ -13,6 +13,7 @@ import java.util.Optional;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableView;
 
@@ -66,6 +67,16 @@ public class Controller {
 		LocalDate ld = dp;
 		String newdate[] = ld.toString().split("-");
 		return newdate[2] + "/" + newdate[1] + "/" + newdate[0];
+	}
+	
+	public String weeklyFormat(ComboBox<String> dayBox) {
+		return "Every "+dayBox.getValue();
+	}
+	
+	public String monthlyFormat(LocalDate dp) {
+		LocalDate ld = dp;
+		String newdate[] = ld.toString().split("-");
+		return "Every " + newdate[2] + " of the month";
 	}
 	
 	//Alert Box Type : ERROR, INFOMATION, WARNING

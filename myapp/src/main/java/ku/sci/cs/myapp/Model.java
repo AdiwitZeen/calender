@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -50,7 +51,15 @@ public class Model implements Initializable {
 	@FXML
 	private ComboBox<String> hourBox;
 	@FXML
+	private ComboBox<String> dayBox;
+	@FXML
 	private ComboBox<String> minBox;
+	@FXML
+	private CheckBox DailyBox;
+	@FXML 
+	private CheckBox WeeklyBox;
+	@FXML
+	private CheckBox MonthlyBox;
 	
 	// ObservableList : value in ComboBox and Table
 	ObservableList<String> minList = FXCollections.observableArrayList(
@@ -65,6 +74,8 @@ public class Model implements Initializable {
 			"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", 
 			"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", 
 			"20", "21", "22", "23");
+	
+	ObservableList<String> dayList = FXCollections.observableArrayList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 	
 	ObservableList<Calendar> tableList = FXCollections.observableArrayList();
 
@@ -82,6 +93,7 @@ public class Model implements Initializable {
 		// ComboBox
 		hourBox.setItems(hourList);
 		minBox.setItems(minList);
+		dayBox.setItems(dayList);
 	}
 	
 	//Set column header
@@ -94,6 +106,10 @@ public class Model implements Initializable {
 
 	private void clearForm() {
 		table.getSelectionModel().select(null);
+		dayBox.setDisable(true);
+		DailyBox.setSelected(false);
+		WeeklyBox.setSelected(false);
+		MonthlyBox.setSelected(false);
 		dp.getEditor().clear();
 		hourBox.getSelectionModel().clearSelection();
 		minBox.getSelectionModel().clearSelection();
@@ -109,6 +125,21 @@ public class Model implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
+	// CHECK BOX ACTION
+		public void radioSelect(ActionEvent event) {
+			if (DailyBox.isSelected()) {
+				dp.setDisable(true);
+				dayBox.setDisable(true);
+			} else if (WeeklyBox.isSelected()) {
+				dp.setDisable(true);
+				dayBox.setDisable(false);
+
+			} else if (MonthlyBox.isSelected()) {
+				dp.setDisable(false);
+				dayBox.setDisable(true);
+			}
+		}
 
 	// SAVE BUTTON ACTION
 	public void saveDate(ActionEvent event) throws SQLException {
@@ -116,13 +147,39 @@ public class Model implements Initializable {
 			if (hourBox.getSelectionModel().isEmpty() || minBox.getSelectionModel().isEmpty() || textArea.getText().equals("")) {
 				control.alertBox(AlertType.INFORMATION, "Empty Field", "Found empty field", "Please, check again");
 			} else {
+				if (DailyBox.isSelected()) {
+					control.saveEvent(control.getEvent(1, "Daily", hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
+					setCellTable();
+					control.loadDataFromDB(tableList, table);
+					clearForm();
+					System.out.println("Save Success!!");
+				}
+				// Weekly
+				else if (WeeklyBox.isSelected()) {
+					control.saveEvent(control.getEvent(1, control.weeklyFormat(dayBox), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
+					setCellTable();
+					control.loadDataFromDB(tableList, table);
+					clearForm();
+					System.out.println("Save Success!!");
+				}
+				// Monthly
+				else if (MonthlyBox.isSelected()) {
+					control.saveEvent(control.getEvent(1, control.monthlyFormat(dp.getValue()), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
+					setCellTable();
+					control.loadDataFromDB(tableList, table);
+					clearForm();
+					System.out.println("Save Success!!");
+				} else {
 				control.saveEvent(control.getEvent(1, control.changeDateFormat(dp.getValue()), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
 				setCellTable();
 				control.loadDataFromDB(tableList, table);
 				clearForm();
 				System.out.println("Save Success!!");
+				}
 			}
-		} catch (Exception e) {
+		}
+		
+	 catch (Exception e) {
 			control.alertBox(AlertType.ERROR, "Date Picker Error", "Something wrong", "Please, select date again.");
 		}
 	}
@@ -138,17 +195,37 @@ public class Model implements Initializable {
 					control.alertBox(AlertType.INFORMATION, "Empty Field", "Found empty field", "Please, check again");
 				} else {
 					if (control.alertConfirm("Edit Event", "Do you want to edit this event?", "").get() == ButtonType.OK) {
+						if (DailyBox.isSelected()) {
 						num = c.getNumber();
 						control.editEvent(num, control.getEvent(num, control.changeDateFormat(dp.getValue()), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
 						setCellTable();
 						control.loadDataFromDB(tableList, table);
 						clearForm();
 						System.out.println("Edit Success!!");
+						}
+						else if (WeeklyBox.isSelected()) {
+							num = c.getNumber();
+							control.editEvent(num, control.getEvent(num, control.weeklyFormat(dayBox), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
+							setCellTable();
+							control.loadDataFromDB(tableList, table);
+							clearForm();
+							System.out.println("Edit Success!!");
+						}
+						// Monthly
+						else if (MonthlyBox.isSelected()) {
+							num = c.getNumber();
+							control.editEvent(num, control.getEvent(num, control.monthlyFormat(dp.getValue()), hourBox.getValue() + ":" + minBox.getValue(), textArea.getText()));
+							setCellTable();
+							control.loadDataFromDB(tableList, table);
+							clearForm();
+							System.out.println("Edit Success!!");
 					} else {
 						System.out.println("Edit Cancel");
 					}
 				}
-			} catch (SQLException e) {
+				}
+			}
+			catch (SQLException e) {
 				control.alertBox(AlertType.ERROR, "Date Picker Error", "Something wrong", "Please, select date again.");
 			}
 		} else {
