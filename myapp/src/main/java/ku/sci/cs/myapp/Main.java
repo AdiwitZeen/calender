@@ -1,6 +1,5 @@
 //Adiwit Yeammaneechai 5710450014
 
-
 package ku.sci.cs.myapp;
 
 import javafx.application.Application;
@@ -21,7 +20,7 @@ public class Main extends Application {
 		Stage window = primaryStage;
 		Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 		Scene scene = new Scene(root);
-		window.setTitle("My Calendar");
+		window.setTitle("My Event");
 		window.setScene(scene);
 		window.show();
 	}
